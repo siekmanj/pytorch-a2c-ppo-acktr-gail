@@ -5,6 +5,7 @@ import time
 from collections import deque
 
 import gym
+import gym_cassie
 import numpy as np
 import torch
 import torch.nn as nn
@@ -36,7 +37,8 @@ def main():
     utils.cleanup_log_dir(eval_log_dir)
 
     torch.set_num_threads(1)
-    device = torch.device("cuda:0" if args.cuda else "cpu")
+    #device = torch.device("cuda:0" if args.cuda else "cpu")
+    device = torch.device("cpu")
 
     envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
                          args.gamma, args.log_dir, device, False)
@@ -117,6 +119,8 @@ def main():
 
             # Obser reward and next obs
             obs, reward, done, infos = envs.step(action)
+#JONAH
+            #envs.render()
 
             for info in infos:
                 if 'episode' in info.keys():
