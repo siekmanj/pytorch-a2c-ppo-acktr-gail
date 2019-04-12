@@ -57,6 +57,7 @@ render_func = get_render_func(env)
 actor_critic, ob_rms = \
             torch.load(os.path.join(args.load_dir, args.env_name + ".pt"))
 
+actor_critic.eval()
 vec_norm = get_vec_normalize(env)
 if vec_norm is not None:
     vec_norm.eval()
@@ -71,7 +72,7 @@ obs = env.reset()
 while True:
     with torch.no_grad():
         value, action, _, recurrent_hidden_states = actor_critic.act(
-            obs, recurrent_hidden_states, masks, deterministic=args.det)
+            obs, recurrent_hidden_states, masks, deterministic=True)
 
     # Obser reward and next obs
     obs, reward, done, _ = env.step(action)
