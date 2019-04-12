@@ -76,6 +76,6 @@ while True:
     # Obser reward and next obs
     obs, reward, done, _ = env.step(action)
     env.render()
-    time.sleep(0.01)
+    #time.sleep(0.01)
 
     masks.fill_(0.0 if done else 1.0)

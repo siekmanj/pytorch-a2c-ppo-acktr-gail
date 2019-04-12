@@ -18,8 +18,10 @@ from a2c_ppo_acktr.arguments import get_args
 from a2c_ppo_acktr.envs import make_vec_envs
 from a2c_ppo_acktr.model import Policy
 from a2c_ppo_acktr.storage import RolloutStorage
+from a2c_ppo_acktr.utils import get_render_func, get_vec_normalize
 from evaluation import evaluate
 
+LOADMODEL = False
 
 def main():
     args = get_args()
@@ -43,11 +45,21 @@ def main():
     envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
                          args.gamma, args.log_dir, device, False)
 
-    actor_critic = Policy(
-        envs.observation_space.shape,
-        envs.action_space,
-        base_kwargs={'recurrent': args.recurrent_policy})
-    actor_critic.to(device)
+    if LOADMODEL:
+      # We need to use the same statistics for normalization as used in training
+      actor_critic, ob_rms = \
+                  torch.load(os.path.join("trained_models/ppo/", args.env_name + ".pt"))
+
+      vec_norm = get_vec_normalize(envs)
+      if vec_norm is not None:
+          vec_norm.eval()
+          vec_norm.ob_rms = ob_rms
+    else:
+      actor_critic = Policy(
+          envs.observation_space.shape,
+          envs.action_space,
+          base_kwargs={'recurrent': args.recurrent_policy})
+      actor_critic.to(device)
 
     if args.algo == 'a2c':
         agent = algo.A2C_ACKTR(
