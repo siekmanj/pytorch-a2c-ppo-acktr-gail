@@ -21,7 +21,7 @@ from a2c_ppo_acktr.storage import RolloutStorage
 from a2c_ppo_acktr.utils import get_render_func, get_vec_normalize
 from evaluation import evaluate
 
-LOADMODEL = False
+LOADMODEL = True
 
 def main():
     args = get_args()
@@ -47,13 +47,16 @@ def main():
 
     if LOADMODEL:
       # We need to use the same statistics for normalization as used in training
+      print("Loading trained_models/ppo/", args.env_name + ".pt")
       actor_critic, ob_rms = torch.load(os.path.join("trained_models/ppo/", args.env_name + ".pt"))
 
       vec_norm = get_vec_normalize(envs)
       if vec_norm is not None:
           vec_norm.eval()
           vec_norm.ob_rms = ob_rms
+      print("Done.")
     else:
+      print("Making new policy")
       actor_critic = Policy(
           envs.observation_space.shape,
           envs.action_space,
