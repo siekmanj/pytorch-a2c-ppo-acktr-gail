@@ -75,7 +75,7 @@ class CassieEnv(gym.Env):
     def step_simulation(self, action):
         ref_pos, ref_vel = self.get_ref_state(self.phase + 1)
 
-        target = action# + ref_pos[self.pos_idx]
+        target = action + ref_pos[self.pos_idx]
 
         self.u = pd_in_t()
         for i in range(5):
