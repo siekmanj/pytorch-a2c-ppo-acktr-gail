@@ -47,8 +47,7 @@ def main():
 
     if LOADMODEL:
       # We need to use the same statistics for normalization as used in training
-      print("Loading trained_models/ppo/", args.env_name + ".pt")
-      actor_critic, ob_rms = torch.load(os.path.join("trained_models/ppo/", args.env_name + ".pt"))
+      actor_critic, ob_rms = torch.load(os.path.join("trained_models/" + args.algo + "/" + args.env_name + ".pt"))
 
       vec_norm = get_vec_normalize(envs)
       if vec_norm is not None:

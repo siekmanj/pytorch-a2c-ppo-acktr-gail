@@ -54,8 +54,8 @@ env = make_vec_envs(
 render_func = get_render_func(env)
 
 # We need to use the same statistics for normalization as used in training
-actor_critic, ob_rms = \
-            torch.load(os.path.join(args.load_dir, args.env_name + ".pt"))
+#actor_critic, ob_rms = torch.load(os.path.join(args.load_dir, args.env_name + ".pt"))
+#actor_critic, ob_rms = torch.load("archived_models/Cassie-v0_sharp.pt")
 
 actor_critic.eval()
 vec_norm = get_vec_normalize(env)
@@ -63,9 +63,9 @@ if vec_norm is not None:
     vec_norm.eval()
     vec_norm.ob_rms = ob_rms
 
-recurrent_hidden_states = torch.zeros(1,
-                                      actor_critic.recurrent_hidden_state_size)
+recurrent_hidden_states = torch.zeros(1, actor_critic.recurrent_hidden_state_size)
 masks = torch.zeros(1, 1)
+print("Hidden size: ", actor_critic.recurrent_hidden_state_size)
 
 obs = env.reset()
 
@@ -77,6 +77,6 @@ while True:
     # Obser reward and next obs
     obs, reward, done, _ = env.step(action)
     env.render()
-    #time.sleep(0.01)
+    time.sleep(0.025)
 
     masks.fill_(0.0 if done else 1.0)
